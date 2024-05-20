@@ -72,7 +72,7 @@ def start_http_server(server_class=HTTPServer, handler_class=HttpHandler):
         
 def start_socket_server(host, port):
     with socket.socket() as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((host, port))
         s.listen(1)
         conn, addr = s.accept()
