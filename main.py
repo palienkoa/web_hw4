@@ -31,17 +31,20 @@ class HttpHandler(BaseHTTPRequestHandler):
     
     def do_POST(self):
         data = self.rfile.read(int(self.headers['Content-Length']))
-        logging.DEBUG(data)
-        data_parse = urllib.parse.unquote_plus(data.decode())
-        logging.DEBUG(data_parse)
-        time = datetime.datetime.now()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(data, ('localhost', 5000))
+        sock.close()
+        # logging.DEBUG(data)
+        # data_parse = urllib.parse.unquote_plus(data.decode())
+        # logging.DEBUG(data_parse)
+        # time = datetime.datetime.now()
         # print(time)
-        data_dict = {str(time): {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}}
-        logging.DEBUG(data_dict)
+        # data_dict = {str(time): {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}}
+        # logging.DEBUG(data_dict)
 
-        with open('storage/data.json', 'a') as json_file:
-            json.dump(data_dict, json_file)
-            json_file.write('\n')
+        # with open('storage/data.json', 'a') as json_file:
+        #     json.dump(data_dict, json_file)
+        #     json_file.write('\n')
         # data_dict = {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}
         # print(data_dict)
         self.send_response(302)
