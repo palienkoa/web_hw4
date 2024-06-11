@@ -31,22 +31,11 @@ class HttpHandler(BaseHTTPRequestHandler):
     
     def do_POST(self):
         data = self.rfile.read(int(self.headers['Content-Length']))
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.sendto(data, ('localhost', 5000))
-        sock.close()
-        # logging.DEBUG(data)
-        # data_parse = urllib.parse.unquote_plus(data.decode())
-        # logging.DEBUG(data_parse)
-        # time = datetime.datetime.now()
-        # print(time)
-        # data_dict = {str(time): {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}}
-        # logging.DEBUG(data_dict)
+        # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # sock.sendto(data, ('localhost', 5000))
+        # sock.close()
+        save_data(data)
 
-        # with open('storage/data.json', 'a') as json_file:
-        #     json.dump(data_dict, json_file)
-        #     json_file.write('\n')
-        # data_dict = {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}
-        # print(data_dict)
         self.send_response(302)
         self.send_header('Location', '/')
         self.end_headers()
@@ -56,8 +45,19 @@ def save_data(data):
     try:
         time = datetime.datetime.now()
         # print(time)
-        data_dict = {str(time): {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}}
-        with open('storage/data.json', 'a') as json_file:
+        # data_dict = {str(time): {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}}
+        #зчитуємо попередній вміст файлу
+        storage_file = 'storage/data.json'
+        try:
+            data_dict = json.load(open(storage_file))
+        except:
+            data_dict = {}
+        
+        #додаємо новий запис
+        data_dict.update({str(time): {key: value for key, value in [el.split('=') for el in data_parse.split('&')]}})
+        
+        #записуємо назад, перезаписуючи повністю 
+        with open(storage_file, 'w') as json_file:
             json.dump(data_dict, json_file)
             json_file.write('\n')
     except ValueError as err:
